@@ -61,61 +61,61 @@ module register_file(
 	  end
 	end
 endmodule
-
-module register_file_testbench ();
-    logic clk;
-    logic reset;
-    logic [4:0] read_reg1;
-    logic [4:0] read_reg2;
-	 logic register_write_valid;
-	 logic [4:0] write_reg;
-    logic [31:0] reg_write_data;
-	 logic [31:0] read_data1;
-    logic [31:0] read_data2;
+// testbench does not pass verilator lint
+// module register_file_testbench ();
+//     logic clk;
+//     logic reset;
+//     logic [4:0] read_reg1;
+//     logic [4:0] read_reg2;
+// 	 logic register_write_valid;
+// 	 logic [4:0] write_reg;
+//     logic [31:0] reg_write_data;
+// 	 logic [31:0] read_data1;
+//     logic [31:0] read_data2;
 	 
-	// Instantiating modules
-	register_file dut(
-    .clk, .reset, .read_reg1, .read_reg2, .register_write_valid, .write_reg, .reg_write_data,
-	 .read_data1, .read_data2);
+// 	// Instantiating modules
+// 	register_file dut(
+//     .clk, .reset, .read_reg1, .read_reg2, .register_write_valid, .write_reg, .reg_write_data,
+// 	 .read_data1, .read_data2);
 
-	// Test conditions
-	parameter CLOCK_PERIOD=10;
-	initial begin
-		clk <= 0;
-		forever #(CLOCK_PERIOD/2) clk <= ~clk;
-	end
+// 	// Test conditions
+// 	parameter CLOCK_PERIOD=10;
+// 	initial begin
+// 		clk <= 0;
+// 		forever #(CLOCK_PERIOD/2) clk <= ~clk;
+// 	end
 	
-	initial
-	begin
-		reset = 1; #20
+// 	initial
+// 	begin
+// 		reset = 1; #20
 		
-		reset = 0;
-		read_reg1 = 4;
-		read_reg2 = 8;
-		register_write_valid = 0; #20
+// 		reset = 0;
+// 		read_reg1 = 4;
+// 		read_reg2 = 8;
+// 		register_write_valid = 0; #20
 		
-		register_write_valid = 1;
-		write_reg = 0;
-		reg_write_data = 32'h10; #20
+// 		register_write_valid = 1;
+// 		write_reg = 0;
+// 		reg_write_data = 32'h10; #20
 		
-		register_write_valid = 1;
-		write_reg = 10;
-		reg_write_data = 32'h20; #20
+// 		register_write_valid = 1;
+// 		write_reg = 10;
+// 		reg_write_data = 32'h20; #20
 		
-		register_write_valid = 1;
-		write_reg = 11;
-		reg_write_data = 32'h21; #20
+// 		register_write_valid = 1;
+// 		write_reg = 11;
+// 		reg_write_data = 32'h21; #20
 		
-		read_reg1 = 11;
-		read_reg2 = 10;
-		register_write_valid = 0; #20
+// 		read_reg1 = 11;
+// 		read_reg2 = 10;
+// 		register_write_valid = 0; #20
 		
-		reset = 1; #20
+// 		reset = 1; #20
 		
-		reset = 0;
-		register_write_valid = 1;
-		write_reg = 20;
-		reg_write_data = 32'h15; #20
-		$stop;
-	end
-endmodule
+// 		reset = 0;
+// 		register_write_valid = 1;
+// 		write_reg = 20;
+// 		reg_write_data = 32'h15; #20
+// 		$stop;
+// 	end
+// endmodule

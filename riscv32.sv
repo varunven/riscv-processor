@@ -45,30 +45,31 @@ module riscv32#(parameter reset_pc=32'h00010000)  // On reset, set the PC to thi
 
 endmodule
 
-module riscv32_testbench();
-	logic clk, reset;
-	logic [31:0] instruction_addr, instruction_read;
-	logic [31:0] data_addr, data_read, data_write;
-	logic [3:0] data_write_byte;
-	logic data_read_valid, data_write_valid;
-	logic zero_flag, negative_flag, overflow_flag;
+// testbench does not pass verilator lint
+// module riscv32_testbench();
+// 	logic clk, reset;
+// 	logic [31:0] instruction_addr, instruction_read;
+// 	logic [31:0] data_addr, data_read, data_write;
+// 	logic [3:0] data_write_byte;
+// 	logic data_read_valid, data_write_valid;
+// 	logic zero_flag, negative_flag, overflow_flag;
 
-	riscv32 dut (.clk, .reset, .instruction_addr, .instruction_read, .data_addr,
-	.data_read, .data_write, .data_write_byte, .data_read_valid, .data_write_valid,
-	.zero_flag, .negative_flag, .overflow_flag);
+// 	riscv32 dut (.clk, .reset, .instruction_addr, .instruction_read, .data_addr,
+// 	.data_read, .data_write, .data_write_byte, .data_read_valid, .data_write_valid,
+// 	.zero_flag, .negative_flag, .overflow_flag);
 
-	parameter CLOCK_PERIOD=100;
-	initial begin
-		clk <= 0;
-		forever #(CLOCK_PERIOD/2) clk <= ~clk;
-	end
+// 	parameter CLOCK_PERIOD=100;
+// 	initial begin
+// 		clk <= 0;
+// 		forever #(CLOCK_PERIOD/2) clk <= ~clk;
+// 	end
 	
-	initial begin
-		reset = 1;
-		reset = 0; #500
-		$stop;
-	end
-endmodule
+// 	initial begin
+// 		reset = 1;
+// 		reset = 0; #500
+// 		$stop;
+// 	end
+// endmodule
 
 
 
