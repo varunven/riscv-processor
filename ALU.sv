@@ -10,7 +10,8 @@ module ALU (
 	output logic [31:0] reg_write_data, data_write,
 	output logic [3:0] data_write_byte,
 	output logic zero_flag,	negative_flag,	overflow_flag,
-	output logic data_write_valid, data_read_valid, register_write_valid
+	output logic data_write_valid, data_read_valid, register_write_valid,
+	output logic [31:0] iaddr_val
 );
 	logic [31:0] alu_result;
 	logic [31:0] temp1, temp2, offset;
@@ -137,15 +138,33 @@ module ALU (
 			temp1 <= read_data1;
 			temp2 <= read_data2;
 			case(alu_control)
-				 0: alu_result <= (read_data1==read_data2)?(instruction_addr+imm):(instruction_addr+4); // BEQ
-				 1: alu_result <= (read_data1!=read_data2)?(instruction_addr+imm):(instruction_addr+4); // BNE
-				 4: alu_result <= (read_data1<read_data2)?(instruction_addr+imm):(instruction_addr+4); // BLT
-				 5: alu_result <= (read_data1>=read_data2)?(instruction_addr+imm):(instruction_addr+4); // BGE
-				 6: alu_result <= (temp1<temp2)?(instruction_addr+imm):(instruction_addr+4); // BLTU
-				 7: alu_result <= (temp1>=temp2)?(instruction_addr+imm):(instruction_addr+4); // BGEU
+				 0: begin // BEQ
+					if(read_data1==read_data2) alu_result <= instruction_addr+imm;
+					else alu_result <= instruction_addr+4;
+				 end
+				 1: begin // BNE
+					if(read_data1!=read_data2) alu_result <= instruction_addr+imm;
+					else alu_result <= instruction_addr+4;
+				 end
+				 4: begin // BLT
+					if(read_data1<read_data2) alu_result <= instruction_addr+imm;
+					else alu_result <= instruction_addr+4;
+				 end
+				 5: begin // BGE
+					if(read_data1>=read_data2) alu_result <= instruction_addr+imm;
+					else alu_result <= instruction_addr+4;
+				 end
+				 6: begin // BLTU
+					if(temp1<temp2) alu_result <= instruction_addr+imm;
+					else alu_result <= instruction_addr+4;
+				 end
+				 7: begin // BGEU
+					if(temp1>=temp2) alu_result <= instruction_addr+imm;
+					else alu_result <= instruction_addr+4;
+				 end
 			endcase
 			
-			reg_write_data <= alu_result[31:0];
+			iaddr_val <= alu_result[31:0];
 			data_write_byte <= 0;
 			data_write <= 0;
 			zero_flag <= (reg_write_data == 0);

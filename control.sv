@@ -13,8 +13,7 @@ module control	(
 	output logic zero_flag, negative_flag, overflow_flag
 );
 
-	logic [31:0] imm;
-	logic [31:0] offset;
+	logic [31:0] imm, offset, iaddr_val;
 	
 	logic [3:0] alu_control; // used to mux into operation
 	logic [3:0] input_type; // 0:R, 1:I, 2:L, 3:S, 4:B, 5:JALR, 6:JAL, 7:AUIPC, 8:LUI
@@ -36,7 +35,7 @@ module control	(
 	ALU ALU_module (.clk, .reset, .read_data1, .read_data2, .imm, .alu_control,
 	.input_type, .data_read,	.reg_write_data, .data_write,	.data_write_byte,
 	.data_addr, .instruction_addr, .zero_flag, .negative_flag, .overflow_flag,
-	.data_write_valid, .data_read_valid, .register_write_valid);
+	.data_write_valid, .data_read_valid, .register_write_valid, .iaddr_val);
 
 	always @(*) begin
 		instruction_addr <= pc;
@@ -131,8 +130,8 @@ module control	(
 			else if (instruction_read[6:0] == 7'b1100011) begin // BRANCH
 				read_reg1 <= instruction_read[19:15];
 				read_reg2 <= instruction_read[24:20];
-				imm <= {{20{instruction_read[31]}},instruction_read[31],instruction_read[7],instruction_read[30:25],instruction_read[11:8]};
-				
+				//imm <= {{20{instruction_read[31]}},instruction_read[31],instruction_read[7],instruction_read[30:25],instruction_read[11:8]};
+				imm <= (instruction_read[14:12] == 3'b110 | instruction_read[14:12] == 3'b111)? {{20{1'b0}}, instruction_read[31], instruction_read[7], instruction_read[30:25], instruction_read[11:8],1'b0}: {{20{instruction_read[31]}}, instruction_read[31], instruction_read[7], instruction_read[30:25], instruction_read[11:8],1'b0};
 				input_type <= 4;
 				
 				case (instruction_read[14:12])				 
@@ -143,7 +142,7 @@ module control	(
 					 6: alu_control <= 4'b0111; // BLTU
 					 7: alu_control <= 4'b1000; // BGEU
 				endcase
-				next_pc <=reg_write_data; // = PC+imm or = PC + 4
+				next_pc <= iaddr_val; // = PC+imm or = PC + 4
 			end
 			
 			else if (instruction_read[6:0] == 7'b1100111) begin // JALR
